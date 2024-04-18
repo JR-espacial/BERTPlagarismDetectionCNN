@@ -3,11 +3,6 @@ import Model
 import train
 import test
 
-
-
-
-
-
 def main():
     data = loadData.load_data()
     model = Model.Bert(data)

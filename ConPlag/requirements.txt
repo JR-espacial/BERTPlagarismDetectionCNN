@@ -1,2 +1,0 @@
-mosspy==1.0.9
-termcolor==2.1.0
