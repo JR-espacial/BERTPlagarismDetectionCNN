@@ -1,12 +1,15 @@
 # Description: This file is used to create the datasets for the model. It reads the files from the dataset and creates the dataset for the model.
 from preprocessData import lexer
+from relationsMatrix import get_relations_matrix
 
 #read file with plagarism
 
 
 
 #create matrix with plagarised pairs
-
+filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
+file_directory = "fire14-source-code-training-dataset/java"
+matrix = get_relations_matrix(filename, file_directory)
 
 #create random datsaet with all the files
 
