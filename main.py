@@ -1,10 +1,10 @@
-import loadData
+import preprocessData
 import Model
 import train
 import test
 
 def main():
-    data = loadData.load_data()
+    data = preprocessData.load_data()
     model = Model.Bert(data)
     train.trainModel(model, data)
     test.testModel(model, data)
