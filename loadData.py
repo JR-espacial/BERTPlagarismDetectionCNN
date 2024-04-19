@@ -118,7 +118,7 @@ def lexer(java_code):
     return tokenLines
 
 # Example usage: load file
-java_code = open('./fire14-source-code-training-dataset/java/043.java').read()
+java_code = open('./fire14-source-code-training-dataset/java/001.java').read()
 outf = open('output2.txt', 'a')
 
 tokenLines = lexer(java_code)
