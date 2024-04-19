@@ -2,6 +2,7 @@
 from preprocessData import lexer
 import os
 import random
+from relationsMatrix import get_relations_matrix
 
 
 #read files with plagarism
@@ -9,7 +10,9 @@ import random
 
 
 #create matrix with plagarised pairs
-
+filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
+file_directory = "fire14-source-code-training-dataset/java"
+matrix = get_relations_matrix(filename, file_directory)
 
 tokenizedFiles=[]
 #do the same for all the files in the dataset
