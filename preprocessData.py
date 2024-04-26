@@ -105,17 +105,18 @@ patterns = {
 pattern = '|'.join('(?P<%s>%s)' % pair for pair in patterns.items())
 
 def lexer(java_code):
-    tokenFile = ''
+    tokenFile =[]
     lines = java_code.split('\n')
     for line in lines:
-        tokenLine = ''
         for match in re.finditer(pattern, line):
             token_type = match.lastgroup
             # token_value = match.group() # Uncomment this line if you want to see the value of each token
             token_number = token_type_dict[token_type] # Uncomment this line if you want to see the number of each token
-            tokenLine+= str(token_number) + ''
-        tokenFile+= tokenLine + '\n'
+            tokenFile.append(token_number)
     return tokenFile
+
+def getNumTokens():
+    return len(token_type_dict)
 
 
 

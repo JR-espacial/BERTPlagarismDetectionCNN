@@ -1,11 +1,10 @@
-import preprocessData
-import Model
-import train
-import test
+from createDatasets import createDataset
+from Model import trainModel
 
 def main():
-    data = preprocessData.load_data()
-    model = Model.Bert(data)
-    train.trainModel(model, data)
-    test.testModel(model, data)
+    data, labels, mask = createDataset()
+    
+    trainModel(data, labels, mask)
 
+
+main()

@@ -90,35 +90,50 @@ def getPlagPercentage(dataset,datasetName):
     plagPercentage = plagCount / len(dataset)
     print(f"{datasetName} plagarism percentage: {plagPercentage}")
 
+def createDataset():
+    #create matrix with plagarised pairs
+    filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
+    file_directory = "fire14-source-code-training-dataset/java"
+    matrix = get_relations_matrix(filename, file_directory)
 
-#create matrix with plagarised pairs
-filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
-file_directory = "fire14-source-code-training-dataset/java"
-matrix = get_relations_matrix(filename, file_directory)
-
-# Get plagarised pairs
-plagPairs = getPlagPairs()
-# Get random pairs
-randomPairs = getRadomPairs(matrix)
-# Get dataset
-dataset = getDataSet(plagPairs, randomPairs, randPercentage=.5, totalPairs=129)
-
-# Get plagarism percentage
-getPlagPercentage(randomPairs, "Random Pairs")
-getPlagPercentage(plagPairs, "Plagarised Pairs")
-getPlagPercentage(dataset, "Dataset")
+    # Get plagarised pairs
+    plagPairs = getPlagPairs()
+    # Get random pairs
+    randomPairs = getRadomPairs(matrix)
+    # Get dataset
+    dataset = getDataSet(plagPairs, randomPairs, randPercentage=.5, totalPairs=129)
 
 
-#divide the dataset into data and labels
-data = []
-labels = []
-for pair in dataset:
-    data.append([pair[0][1], pair[1][1]])
-    labels.append(pair[2])
 
-print("Data:", data[0])
-print("Labels:", labels[0])
+    # Get plagarism percentage
+    getPlagPercentage(randomPairs, "Random Pairs")
+    getPlagPercentage(plagPairs, "Plagarised Pairs")
+    getPlagPercentage(dataset, "Dataset")
 
-tensor_tf = tf.convert_to_tensor(data, dtype=tf.string)
 
-print("Tensor:", tensor_tf.shape)
+    #divide the dataset into data and labels
+    data = []
+    labels = []
+    for pair in dataset:
+        data.append([pair[0][1], pair[1][1]])
+        labels.append(pair[2])
+
+    print("Data:", data[0])
+    print("Labels:", labels[0])
+
+    # Convert data to ragged tensor
+    ragged_data = tf.ragged.constant(data)
+
+    # Pad ragged tensor
+    padded_data = ragged_data.to_tensor()
+
+    # Create mask for the padded values so we can ignore their values in the training
+    mask = tf.cast(tf.math.greater(ragged_data.to_tensor(), 0), dtype=tf.float32)
+
+    # Convert to tensor
+    tensor_tf = tf.convert_to_tensor(padded_data)
+    labels = tf.convert_to_tensor(labels)
+
+    print("Tensor:", tensor_tf.shape)
+
+    return tensor_tf, labels, mask
