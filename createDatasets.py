@@ -34,7 +34,7 @@ def getPlagPairs():
     return tokenizedPlagPairs
     
 #generate random pairs
-def getRadomPairs(matrix):
+def getRandomPairs(matrix):
     tokenizedFiles=[]
     #tokenize all the files
     for file in os.listdir('./fire14-source-code-training-dataset/java/'):
@@ -99,7 +99,7 @@ def createDataset():
     # Get plagarised pairs
     plagPairs = getPlagPairs()
     # Get random pairs
-    randomPairs = getRadomPairs(matrix)
+    randomPairs = getRandomPairs(matrix)
     # Get dataset
     dataset = getDataSet(plagPairs, randomPairs, randPercentage=.5, totalPairs=129)
 
@@ -115,7 +115,7 @@ def createDataset():
     data = []
     labels = []
     for pair in dataset:
-        data.append([pair[0][1], pair[1][1]])
+        data.append([pair[0][1] + pair[1][1]])
         labels.append(pair[2])
 
     print("Data:", data[0])
