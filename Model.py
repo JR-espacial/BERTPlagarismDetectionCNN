@@ -21,7 +21,7 @@ def createModel(VOCAB_SIZE,EMBEDDING_DIM=70, HIDDEN_UNITS=3, NUM_CLASSES=2):
   return model
 
 
-def trainModel(X_train, X_test, y_train, y_test, mask):
+def trainModel(X_train, X_test, y_train, y_test):
 
   vocab_size = getNumTokens()
 

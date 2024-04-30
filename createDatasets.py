@@ -124,9 +124,6 @@ def createDataset():
     # Pad ragged tensor
     padded_data = ragged_data.to_tensor()
 
-    # Create mask for the padded values so we can ignore their values in the training
-    mask = tf.cast(tf.math.greater(ragged_data.to_tensor(), 0), dtype=tf.float32)
-
     # Convert to tensor
     tensor_tf = tf.convert_to_tensor(padded_data)
     
@@ -135,4 +132,4 @@ def createDataset():
 
     print("Tensor:", tensor_tf.shape)
 
-    return tensor_tf, labels, mask
+    return tensor_tf, labels
