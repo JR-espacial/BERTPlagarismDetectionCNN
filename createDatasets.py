@@ -4,7 +4,7 @@ import os
 import random
 from relationsMatrix import get_relations_matrix
 import tensorflow as tf
-
+import numpy as np
 
 # read files with plagarism
 def getPlagPairs():
@@ -118,9 +118,6 @@ def createDataset():
         data.append([pair[0][1] + pair[1][1]])
         labels.append(pair[2])
 
-    print("Data:", data[0])
-    print("Labels:", labels[0])
-
     # Convert data to ragged tensor
     ragged_data = tf.ragged.constant(data)
 
@@ -132,7 +129,10 @@ def createDataset():
 
     # Convert to tensor
     tensor_tf = tf.convert_to_tensor(padded_data)
+    labels = np.array(labels)
+    labels = labels.astype(np.int32)
     labels = tf.convert_to_tensor(labels)
+
 
     print("Tensor:", tensor_tf.shape)
 
