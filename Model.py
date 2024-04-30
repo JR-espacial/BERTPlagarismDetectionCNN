@@ -11,18 +11,17 @@ def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=4630):
     return model
 
 
-def trainModel(X_train, X_test, y_train, y_test):
+def trainModel(train_data, validation_data):
 
   vocab_size = getNumTokens()
 
   model = createModel( VOCAB_SIZE=vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(X_train, 
-            y_train, 
-            epochs=30, 
-            batch_size=10,
-            validation_data=(X_test, y_test))
+  model.fit(x=train_data, 
+            epochs=5, 
+            batch_size=32,
+            validation_data=validation_data)
 
   plotModel(model)
 

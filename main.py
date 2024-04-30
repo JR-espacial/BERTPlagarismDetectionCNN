@@ -1,4 +1,4 @@
-from createDatasets import createDataset
+from createDatasets import createDataset, create_batches
 from Model import trainModel
 import numpy as np
 
@@ -15,7 +15,10 @@ def main():
     y_val = labels[div_train:div_train+div_val]
     y_test = labels[div_val:]
     
-    trainModel(X_train,X_val, y_train,y_val)
+    train_data = create_batches(X_train, y_train)
+    validation_data = create_batches(X_val, y_val)
+    
+    trainModel(train_data, validation_data)
 
 
 main()

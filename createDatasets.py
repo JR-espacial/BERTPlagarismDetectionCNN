@@ -90,6 +90,11 @@ def getPlagPercentage(dataset,datasetName):
     plagPercentage = plagCount / len(dataset)
     print(f"{datasetName} plagarism percentage: {plagPercentage}")
 
+def create_batches(X, y, batch_size=32):
+    dataset = tf.data.Dataset.from_tensor_slices((X, y))
+    dataset = dataset.batch(batch_size)
+    return dataset
+
 def createDataset():
     #create matrix with plagarised pairs
     filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
