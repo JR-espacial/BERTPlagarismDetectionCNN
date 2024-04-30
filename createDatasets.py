@@ -129,8 +129,7 @@ def createDataset():
 
     # Convert to tensor
     tensor_tf = tf.convert_to_tensor(padded_data)
-    labels = np.array(labels)
-    labels = labels.astype(np.int32)
+    
     labels = tf.convert_to_tensor(labels)
 
 
