@@ -2,23 +2,13 @@ import tensorflow as tf
 from preprocessData import getNumTokens
 import numpy as np
 
-def createModel(VOCAB_SIZE,EMBEDDING_DIM=70, HIDDEN_UNITS=3, NUM_CLASSES=2):
-  # Define your RNN model with masking
-#   model = tf.keras.Sequential([
-#         tf.keras.layers.Embedding(input_dim=VOCAB_SIZE, output_dim=EMBEDDING_DIM, mask_zero=True),
-#         tf.keras.layers.SimpleRNN(units=HIDDEN_UNITS),
-#         tf.keras.layers.Flatten(),  # Flatten the output
-#         tf.keras.layers.Dense(128, activation='relu'),
-#         tf.keras.layers.Dense(units=NUM_CLASSES, activation='softmax')
-#     ])
-  
-
-  model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
-    tf.keras.layers.GRU(units =100),
-    tf.keras.layers.Dense(1, activation='sigmoid')
+def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=4630):
+    model = tf.keras.Sequential([
+        tf.keras.layers.Embedding(VOCAB_SIZE, EMBEDDING_DIM, input_length=MAX_SEQUENCE_LENGTH, mask_zero=True),
+        tf.keras.layers.GRU(units=128, dropout=0.2, recurrent_dropout=0.2),
+        tf.keras.layers.Dense(1, activation='sigmoid')
     ])
-  return model
+    return model
 
 
 def trainModel(X_train, X_test, y_train, y_test):
