@@ -5,7 +5,7 @@ import numpy as np
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=4630):
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(VOCAB_SIZE, EMBEDDING_DIM, input_length=MAX_SEQUENCE_LENGTH, mask_zero=True),
-        tf.keras.layers.GRU(units=128, dropout=0.2,),
+        tf.keras.layers.GRU(units=128, dropout=0.2),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     return model
@@ -21,7 +21,7 @@ def trainModel(X_train, X_test, y_train, y_test):
   model.fit(X_train, 
             y_train, 
             epochs=20, 
-            batch_size=32,
+            batch_size=10,
             validation_data=(X_test, y_test))
 
   plotModel(model)
