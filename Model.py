@@ -21,23 +21,23 @@ def createModel(VOCAB_SIZE,EMBEDDING_DIM=70, HIDDEN_UNITS=3, NUM_CLASSES=2):
   return model
 
 
-def trainModel(data,labels, mask):
+def trainModel(X_train, X_test, y_train, y_test, mask):
 
   vocab_size = getNumTokens()
-
-  # Reshape the data remove the second dimension
-  data_reshaped = np.squeeze(data, axis=1)
-  
 
   model = createModel( VOCAB_SIZE=vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(data_reshaped, labels, epochs=30, batch_size=10,)
+  model.fit(X_train, 
+            y_train, 
+            epochs=30, 
+            batch_size=10,
+            validation_data=(X_test, y_test))
 
   plotModel(model)
 
   #save model
-  model.save('RNN.h5')
+  model.save('RNN.keras')
 
 
 #plot model accuracy , loss
