@@ -146,7 +146,4 @@ def create_dataset():
 
     labels = tf.convert_to_tensor(labels)
 
-
-    print("Tensor:", tensor_tf.shape)
-
     return tensor_tf, labels
