@@ -8,6 +8,15 @@ import numpy as np
 from embedding import create_embedding
 
 
+def get_plag_samples(dataset,labels):
+    plag_samples = []
+    for i in range(len(labels)):
+        if labels[i] == 1:
+            plag_samples.append(dataset[i])
+    
+    return plag_samples
+
+
 # read files with plagarism
 def getPlagPairs():
     plag = open("fire14-source-code-training-dataset/SOCO14-java.qrel").readlines()
