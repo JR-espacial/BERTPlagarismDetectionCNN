@@ -131,8 +131,9 @@ def create_dataset():
     data = []
     labels = []
     for pair in dataset:
-        vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
-        data.append([vector1 + vector2])
+        # vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
+        # data.append([vector1 + vector2])
+        data.append([pair[0][1] + pair[1][1]])
         labels.append(pair[2])
 
     # Convert data to ragged tensor
@@ -148,5 +149,6 @@ def create_dataset():
 
 
     print("Tensor:", tensor_tf.shape)
+    print(tensor_tf[1])
 
     return tensor_tf, labels
