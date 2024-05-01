@@ -131,19 +131,25 @@ def create_dataset():
     data = []
     labels = []
     for pair in dataset:
-        vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
-        data.append([vector1 + vector2])
+        # vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
+        # data.append([vector1 + vector2])
+        data.append([pair[0][1] + pair[1][1]])
         labels.append(pair[2])
 
     # Convert data to ragged tensor
     ragged_data = tf.ragged.constant(data)
 
     # Pad ragged tensor
+    #padded_sequences = tf.keras.preprocessing.sequence.pad_sequences(sequences, padding='post')
     padded_data = ragged_data.to_tensor()
 
     # Convert to tensor
     tensor_tf = tf.convert_to_tensor(padded_data)
 
     labels = tf.convert_to_tensor(labels)
+
+
+    print("Tensor:", tensor_tf.shape)
+    print(tensor_tf[1])
 
     return tensor_tf, labels

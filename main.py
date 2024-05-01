@@ -20,7 +20,7 @@ def main():
     train_data = create_batches(X_train, y_train)
     validation_data = create_batches(X_val, y_val)
 
-    trainModel(train_data, validation_data)
+    trainModel(X_train, y_train, X_val, y_val)
     #model = models.load_model('RNN.keras')
     #test_model(model, X_test, y_test)
 
