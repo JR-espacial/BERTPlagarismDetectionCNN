@@ -5,6 +5,8 @@ import random
 from relationsMatrix import get_relations_matrix
 import tensorflow as tf
 import numpy as np
+from embedding import create_embedding
+
 
 # read files with plagarism
 def getPlagPairs():
@@ -18,7 +20,7 @@ def getPlagPairs():
         file1, file2 = line.split(' ')
         # strip/newline
         file2 = file2.strip( '\n')
-        
+
         plagpairs.append([file1, file2])
 
     #tokenize the plag pairs
@@ -32,20 +34,20 @@ def getPlagPairs():
         tokenizedPlagPairs.append([[pair[0], fileContent1], [pair[1], fileContent2], 1])
 
     return tokenizedPlagPairs
-    
+
 #generate random pairs
 def getRandomPairs(matrix):
     tokenizedFiles=[]
     #tokenize all the files
     for file in os.listdir('./fire14-source-code-training-dataset/java/'):
         java_code = open('./fire14-source-code-training-dataset/java/' + file).read()
-        
-        fileContent = lexer(java_code) 
+
+        fileContent = lexer(java_code)
         filenum = int(file.split('.')[0])
 
 
         tokenizedFiles.append([filenum,fileContent])
-    
+
     #create random  pair dataset with all the files
 
     # Shuffle the list of tokenized files
@@ -67,21 +69,21 @@ def getDataSet(tokenizedPlagPairs, randomPairs, randPercentage=0.5,totalPairs=12
     dataset = []
     # Add random pairs to the dataset
     limit = int(len(randomPairs) * randPercentage)
-    
+
     for i in range(limit):
         dataset.append(randomPairs[i])
     # Add just the remaining percentage of plagarised pairs to the dataset
     remainingPlagPairs = totalPairs - limit
     for pair in tokenizedPlagPairs[0:remainingPlagPairs]:
         dataset.append(pair)
-    
+
     # Shuffle the dataset
     random.shuffle(dataset)
 
     return dataset
 
 # Get plag percentage
-def getPlagPercentage(dataset,datasetName):
+def getPlagPercentage(dataset, datasetName):
     plagCount = 0
     for pair in dataset:
         if pair[2] == 1:
@@ -95,7 +97,7 @@ def create_batches(X, y, batch_size=32):
     dataset = dataset.batch(batch_size)
     return dataset
 
-def createDataset():
+def create_dataset():
     #create matrix with plagarised pairs
     filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
     file_directory = "fire14-source-code-training-dataset/java"
@@ -120,7 +122,8 @@ def createDataset():
     data = []
     labels = []
     for pair in dataset:
-        data.append([pair[0][1] + pair[1][1]])
+        vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
+        data.append([vector1, vector2])
         labels.append(pair[2])
 
     # Convert data to ragged tensor
@@ -131,7 +134,7 @@ def createDataset():
 
     # Convert to tensor
     tensor_tf = tf.convert_to_tensor(padded_data)
-    
+
     labels = tf.convert_to_tensor(labels)
 
 
