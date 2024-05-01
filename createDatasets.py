@@ -132,7 +132,7 @@ def create_dataset():
     labels = []
     for pair in dataset:
         vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
-        data.append([vector1, vector2])
+        data.append([vector1 + vector2])
         labels.append(pair[2])
 
     # Convert data to ragged tensor
