@@ -140,6 +140,7 @@ def create_dataset():
     ragged_data = tf.ragged.constant(data)
 
     # Pad ragged tensor
+    #padded_sequences = tf.keras.preprocessing.sequence.pad_sequences(sequences, padding='post')
     padded_data = ragged_data.to_tensor()
 
     # Convert to tensor
