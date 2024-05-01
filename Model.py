@@ -12,10 +12,9 @@ def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=4630):
 
 
 def trainModel(train_data, validation_data):
-
   vocab_size = getNumTokens()
 
-  model = createModel( VOCAB_SIZE=vocab_size)
+  model = createModel(VOCAB_SIZE=vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
   model.fit(x=train_data, 
@@ -34,7 +33,8 @@ def plotModel(model):
   import matplotlib.pyplot as plt
 
   # Plot model accuracy
-  plt.plot(model.history.history['accuracy'])
+  plt.plot(model.history.history['accuracy'], label='Train')
+  plt.plot(model.history.history['val_accuracy'], label='Validation')
   plt.title('Model accuracy')
   plt.ylabel('Accuracy')
   plt.xlabel('Epoch')
@@ -42,7 +42,8 @@ def plotModel(model):
   plt.show()
 
   # Plot model loss
-  plt.plot(model.history.history['loss'])
+  plt.plot(model.history.history['loss'], label='Train')
+  plt.plot(model.history.history['val_loss'], label='Validation')
   plt.title('Model loss')
   plt.ylabel('Loss')
   plt.xlabel('Epoch')
