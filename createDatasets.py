@@ -13,7 +13,7 @@ def get_plag_samples(dataset,labels):
     for i in range(len(labels)):
         if labels[i] == 1:
             plag_samples.append(dataset[i])
-    
+
     return plag_samples
 
 
