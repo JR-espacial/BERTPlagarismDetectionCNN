@@ -26,7 +26,7 @@ def trainModel(data,labels,val_data, val_labels):
   model = createModel( VOCAB_SIZE = vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(data_reshaped, labels, epochs=10, batch_size=10, validation_data=(val_reshaped, val_labels))
+  model.fit(data_reshaped, labels, epochs=30, batch_size=10, validation_data=(val_reshaped, val_labels))
 
   #save model
   model.save('RNN.keras')
