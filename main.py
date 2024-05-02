@@ -4,6 +4,17 @@ import numpy as np
 from test import test_model
 from keras.models import load_model
 
+def execute(function_name, function, *args):
+    #prompt the use if he wants to ecexute the function name
+    opt = input("Do you want to " + function_name + " ? (y/n)")
+    if opt == "y":
+        output = function(*args)
+        if output != None:
+            return output
+    else:
+        print("Function " + function_name + " was not executed")
+
+
 def main():
     data, labels= create_dataset()
     # data_reshaped = np.squeeze(data, axis=1)
@@ -20,9 +31,11 @@ def main():
     # train_data = create_batches(X_train, y_train)
     # validation_data = create_batches(X_val, y_val)
 
-    trainModel(X_train, y_train, X_val, y_val)
+
+    execute("train the model",trainModel, X_train, y_train, X_val, y_val)
 
     model = load_model('RNN.keras')
-    test_model(model, X_test, y_test)
+
+    execute("test the model",test_model, model, X_test, y_test)
 
 main()
