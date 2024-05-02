@@ -16,7 +16,7 @@ def execute(function_name, function, *args):
 
 
 def main():
-    train,val,test= create_dataset()
+    data,labels= create_dataset()
 
     div_train = int(len(data) * 0.8)
     div_val = int(len(data) * 0.2)

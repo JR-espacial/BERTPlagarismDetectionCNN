@@ -6,8 +6,6 @@ from relationsMatrix import get_relations_matrix
 import tensorflow as tf
 import numpy as np
 from embedding import create_embedding
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-from sklearn.model_selection import train_test_split
 
 
 def get_plag_samples(dataset,labels):
@@ -15,7 +13,7 @@ def get_plag_samples(dataset,labels):
     for i in range(len(labels)):
         if labels[i] == 1:
             plag_samples.append(dataset[i])
-
+    
     return plag_samples
 
 
@@ -132,46 +130,26 @@ def create_dataset():
     #divide the dataset into data and labels
     data = []
     labels = []
-    text1=[]
-    text2=[]
     for pair in dataset:
         # vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
         # data.append([vector1 + vector2])
-        text1.append(pair[0][1])
-        text2.append(pair[1][1])
+        data.append([pair[0][1] + pair[1][1]])
         labels.append(pair[2])
 
-    data = text1 + text2
-    max_seq_length = max(len(seq) for seq in data)
+    # Convert data to ragged tensor
+    ragged_data = tf.ragged.constant(data)
 
-    print("Max sequence length:", max_seq_length)
+    # Pad ragged tensor
+    #padded_sequences = tf.keras.preprocessing.sequence.pad_sequences(sequences, padding='post')
+    padded_data = ragged_data.to_tensor()
 
-    text1_padded = pad_sequences(text1, maxlen=max_seq_length, padding='post')
-    text2_padded = pad_sequences(text2, maxlen=max_seq_length, padding='post')
+    # Convert to tensor
+    tensor_tf = tf.convert_to_tensor(padded_data)
 
     labels = tf.convert_to_tensor(labels)
 
-    text1_indices = np.array(text1_padded)
-    text2_indices = np.array(text2_padded)
 
+    print("Tensor:", tensor_tf.shape)
+    print(tensor_tf[1])
 
-        # Split the data into training, validation, and test sets
-    pair1_train, pair1_test, pair2_train, pair2_test, labels_train, labels_test = train_test_split(
-        text1_indices, text2_indices, labels, test_size=0.2, random_state=42)
-
-    pair1_train, pair1_val, pair2_train, pair2_val, labels_train, labels_val = train_test_split(
-        text1_indices, text2_indices, labels_train, test_size=0.2, random_state=42)
-    
-    pair1_train = np.array(pair1_train)
-    pair2_train = np.array(pair2_train)
-    pair1_val = np.array(pair1_val)
-    pair2_val = np.array(pair2_val)
-    pair1_test = np.array(pair1_test)
-    pair2_test = np.array(pair2_test)
-
-    labels_train = np.array(labels_train)
-    labels_val = np.array(labels_val)
-    labels_test = np.array(labels_test)
-    
-
-    return (pair1_train, pair2_train, labels_train), (pair1_val, pair2_val, labels_val), (pair1_test, pair2_test, labels_test)
+    return tensor_tf, labels
