@@ -6,6 +6,7 @@ from relationsMatrix import get_relations_matrix
 import tensorflow as tf
 import numpy as np
 from embedding import create_embedding
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 
 def get_plag_samples(dataset,labels):
@@ -130,26 +131,27 @@ def create_dataset():
     #divide the dataset into data and labels
     data = []
     labels = []
+    text1=[]
+    text2=[]
     for pair in dataset:
         # vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
         # data.append([vector1 + vector2])
-        data.append([pair[0][1] + pair[1][1]])
+        text1.append(pair[0][1])
+        text2.append(pair[1][1])
         labels.append(pair[2])
 
-    # Convert data to ragged tensor
-    ragged_data = tf.ragged.constant(data)
+    data = text1 + text2
+    max_seq_length = max(len(seq) for seq in data)
 
-    # Pad ragged tensor
-    #padded_sequences = tf.keras.preprocessing.sequence.pad_sequences(sequences, padding='post')
-    padded_data = ragged_data.to_tensor()
+    print("Max sequence length:", max_seq_length)
 
-    # Convert to tensor
-    tensor_tf = tf.convert_to_tensor(padded_data)
+    text1_padded = pad_sequences(text1, maxlen=max_seq_length, padding='post')
+    text2_padded = pad_sequences(text2, maxlen=max_seq_length, padding='post')
 
     labels = tf.convert_to_tensor(labels)
 
+    text1_indices = np.array(text1_padded)
+    text2_indices = np.array(text2_padded)
+    
 
-    print("Tensor:", tensor_tf.shape)
-    print(tensor_tf[1])
-
-    return tensor_tf, labels
+    return text1_indices,text2_indices, labels
