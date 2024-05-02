@@ -1,7 +1,10 @@
 from model import plot_confusion_matrix
 from tensorflow.keras import models
+import tensorflow as tf
+import numpy as np
 
 def test_model(model, x_test, y_test):
+  x_test = np.squeeze(x_test, axis=1)
   # Evaluar el modelo en el conjunto de prueba
   test_loss, test_acc = model.evaluate(x_test, y_test)
   # Print the test loss and accuracy

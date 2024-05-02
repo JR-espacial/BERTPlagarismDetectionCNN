@@ -2,9 +2,7 @@ from createDatasets import create_dataset, create_batches
 from model import trainModel
 import numpy as np
 from test import test_model
-# from tensorflow.keras import models
 from keras.models import load_model
-import tensorflow as tf
 
 def main():
     data, labels= create_dataset()
@@ -22,10 +20,9 @@ def main():
     # train_data = create_batches(X_train, y_train)
     # validation_data = create_batches(X_val, y_val)
 
-    # trainModel(X_train, y_train, X_val, y_val)
+    trainModel(X_train, y_train, X_val, y_val)
 
-    model = tf.keras.models.load_model('RNN.h5')
-    # model = load_model('RNN.h5')
+    model = load_model('RNN.keras')
     test_model(model, X_test, y_test)
 
 main()

@@ -6,13 +6,18 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
+    # model = tf.keras.Sequential([
+    #     tf.keras.layers.Embedding(VOCAB_SIZE, 50, mask_zero=True),
+    #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
+    #     tf.keras.layers.Bidirectional(tf.keras.layers.GRU(32)),
+    #     tf.keras.layers.Dense(32, activation='relu'),
+    #     tf.keras.layers.Dropout(0.5),
+    #     tf.keras.layers.Dense(1, activation='sigmoid')
+    # ])
     model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(VOCAB_SIZE, 50, mask_zero=True),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
-        tf.keras.layers.Bidirectional(tf.keras.layers.GRU(32)),
-        tf.keras.layers.Dense(32, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(1, activation='sigmoid')
+      tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
+      tf.keras.layers.GRU(units =100),
+      tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     return model
 
@@ -28,13 +33,14 @@ def trainModel(data,labels,val_data, val_labels):
   model = createModel( VOCAB_SIZE = vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(data_reshaped, labels, epochs=30, batch_size=10, validation_data=(val_reshaped, val_labels))
-
-  plotModel(model)
-  plot_confusion_matrix(val_labels, model.predict_classes(val_reshaped))
+  model.fit(data_reshaped, labels, epochs=10, batch_size=10, validation_data=(val_reshaped, val_labels))
 
   #save model
   model.save('RNN.keras')
+
+  plotModel(model)
+  # plot_confusion_matrix(val_labels, model.predict(val_reshaped))
+
 
 
 # Plot model accuracy , loss
