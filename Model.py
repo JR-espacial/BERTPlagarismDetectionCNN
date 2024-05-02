@@ -1,32 +1,26 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Input, Embedding, LSTM, Dense, Dropout
+from tensorflow.keras.layers import Input, GRU, LSTM, Dense, Dropout, Bidirectional, Embedding
 from preprocessData import getNumTokens
 import numpy as np
 
-def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
+def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=5794):
     model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(VOCAB_SIZE, 50, mask_zero=True),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
-        tf.keras.layers.Bidirectional(tf.keras.layers.GRU(32)),
-        tf.keras.layers.Dense(32, activation='relu'),
-        tf.keras.layers.Dropout(0.5),
-        tf.keras.layers.Dense(1, activation='sigmoid')
+        GRU(128, return_sequences=True),
+        GRU(64, return_sequences=True),
+        GRU(32),
+        Dense(1, activation='sigmoid')
     ])
+    model.summary()
     return model
 
-def trainModel(data,labels,val_data, val_labels):
+def trainModel(train_data, validation_data):
 
   vocab_size = getNumTokens()
-
-  # Reshape the data remove the second dimension
-  data_reshaped = np.squeeze(data, axis=1)
-  val_reshaped = np.squeeze(val_data, axis=1)
-  
 
   model = createModel( VOCAB_SIZE = vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(data_reshaped, labels, epochs=30, batch_size=10, validation_data=(val_reshaped, val_labels))
+  model.fit(train_data, epochs=20, batch_size=32, validation_data=validation_data)
 
   plotModel(model)
 
