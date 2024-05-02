@@ -1,5 +1,5 @@
 from createDatasets import create_dataset, create_batches
-from model import trainModel
+from Model import trainModel
 import numpy as np
 from test import test_model
 from keras.models import load_model
