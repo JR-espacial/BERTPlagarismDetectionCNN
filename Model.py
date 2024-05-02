@@ -6,7 +6,13 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 import tensorflow as tf
-from tensorflow.keras.layers import Input, LSTM, Embedding, Bidirectional, Dense, Lambda
+from tensorflow.keras.layers import (
+  Input, 
+  LSTM, 
+  Dense, 
+  Lambda,
+  Bidirectional,
+)
 from tensorflow.keras.models import Model
 import numpy as np
 from tensorflow.keras.utils import to_categorical
@@ -17,10 +23,11 @@ def siamese_rnn(input_shape, lstm_units=64, embedding_dim=128):
   input_code = Input(shape=input_shape)
 
   # Define LSTM layer
-  lstm_layer = LSTM(lstm_units)(input_code)
+  lstm_layer1 = Bidirectional(LSTM(lstm_units, return_sequences=True))(input_code)
+  lstm_layer2 = Bidirectional(LSTM(lstm_units))(lstm_layer1)
 
   # Define output layer
-  output = Dense(embedding_dim, activation='relu')(lstm_layer)
+  output = Dense(embedding_dim, activation='relu')(lstm_layer2)
 
   # Build the model
   model = Model(inputs=input_code, outputs=output)
@@ -93,41 +100,48 @@ def trainModel(data, labels, val_data, val_labels):
   siamese_model = create_siamese_model(input_shape)
   siamese_model.summary()
 
-  model = create_siamese_model(input_shape)
+  # model = create_siamese_model(input_shape)
 
   # Compile the model
   siamese_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
   # Train the model
-  history = siamese_model.fit([pair1_one_hot, pair2_one_hot], labels,epochs=10, batch_size=10, verbose=1)
+  history = siamese_model.fit([pair1_one_hot, pair2_one_hot], 
+                              labels, 
+                              epochs=10, 
+                              batch_size=10,
+                              validation_data=([pair1_one_hot_val, pair2_one_hot_val], val_labels),
+                              verbose=1)
 
 
   #save model
-  model.save('Siamese.keras')
+  # model.save('Siamese.keras')
 
-  plotModel(model)
+  plotModel(history.history)
   # plot_confusion_matrix(val_labels, model.predict(val_reshaped))
 
 
 
 # Plot model accuracy , loss
-def plotModel(model):
+def plotModel(history):
     import matplotlib.pyplot as plt
 
     # Plot model accuracy
-    plt.plot(model.history.history['accuracy'])
+    plt.plot(history['accuracy'], label='Training accuracy')
+    plt.plot(history['val_accuracy'], label='Validation accuracy')
     plt.title('Model accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend()
     plt.show()
 
     # Plot model loss
-    plt.plot(model.history.history['loss'])
+    plt.plot(history['loss'], label='Training loss')
+    plt.plot(history['val_loss'], label='Validation loss')
     plt.title('Model loss')
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend()
     plt.show()
 
 
