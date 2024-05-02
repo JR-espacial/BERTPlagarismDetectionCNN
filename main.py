@@ -7,12 +7,9 @@ from keras.models import load_model
 def main():
     train,val,test= create_dataset()
 
-
-   
-
     trainModel(train,val)
 
     model = load_model('RNN.keras')
-    test_model(model, X_test, y_test)
+    test_model(model, (test[0], test[1]), test[2])
 
 main()
