@@ -8,15 +8,15 @@ from sklearn.metrics import confusion_matrix
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
-        tf.keras.layers.GRU(units =100),
-        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.GRU(70,dropout=0,recurrent_dropout=0),
+        tf.keras.layers.Dense(70, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     return model
 
 def trainModel(data,labels,val_data, val_labels):
 
-  vocab_size = getNumTokens()
+  vocab_size = getNumTokens() + 1
 
   # Reshape the data remove the second dimension
   data_reshaped = np.squeeze(data, axis=1)
@@ -32,7 +32,9 @@ def trainModel(data,labels,val_data, val_labels):
   model.save('RNN.keras')
 
   plotModel(model)
-  # plot_confusion_matrix(val_labels, model.predict(val_reshaped))
+  
+  predictions = (model.predict(val_reshaped) > 0.5).astype("int32")
+  plot_confusion_matrix(val_labels,predictions)
 
 
 
@@ -41,19 +43,21 @@ def plotModel(model):
     import matplotlib.pyplot as plt
 
     # Plot model accuracy
-    plt.plot(model.history.history['accuracy'])
+    plt.plot(model.history.history['accuracy'], label='Train')
+    plt.plot(model.history.history['val_accuracy'], label='Validation')
     plt.title('Model accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend(loc='upper left')
     plt.show()
 
     # Plot model loss
-    plt.plot(model.history.history['loss'])
+    plt.plot(model.history.history['loss'], label='Train')
+    plt.plot(model.history.history['val_loss'], label='Validation')
     plt.title('Model loss')
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend(loc='upper left')
     plt.show()
 
 
