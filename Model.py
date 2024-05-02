@@ -6,18 +6,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
-    # model = tf.keras.Sequential([
-    #     tf.keras.layers.Embedding(VOCAB_SIZE, 50, mask_zero=True),
-    #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(64, return_sequences=True)),
-    #     tf.keras.layers.Bidirectional(tf.keras.layers.GRU(32)),
-    #     tf.keras.layers.Dense(32, activation='relu'),
-    #     tf.keras.layers.Dropout(0.5),
-    #     tf.keras.layers.Dense(1, activation='sigmoid')
-    # ])
     model = tf.keras.Sequential([
-      tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
-      tf.keras.layers.GRU(units =100),
-      tf.keras.layers.Dense(1, activation='sigmoid')
+        tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
+        tf.keras.layers.GRU(units =100),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(1, activation='sigmoid')
     ])
     return model
 
