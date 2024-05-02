@@ -74,27 +74,33 @@ def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     return model
 
 def trainModel(data, labels, val_data, val_labels):
-  VOCAB_SIZE = getNumTokens()
+  VOCAB_SIZE = 42
   MAX_SEQUENCE_LENGTH = 2381
 
   data_1, data_2 = data
   val_data_1, val_data_2 = val_data
 
+  print("Shape:", data_1.shape)
   # Define input shape (sequence length, vocabulary size)
   input_shape = (MAX_SEQUENCE_LENGTH, VOCAB_SIZE)  # Example: sequences of length 100, vocabulary size of 500
   siamese_model = create_siamese_model(input_shape)
   siamese_model.summary()
 
-  # Reshape the data remove the second dimension
-  data_reshaped = np.squeeze(data, axis=1)
-  val_reshaped = np.squeeze(val_data, axis=1)
-
-
   model = create_siamese_model(input_shape)
-  # model = createModel( VOCAB_SIZE = VOCAB_SIZE)
+
+  # Compile the model
+  siamese_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+  # Train the model
+  history = siamese_model.fit([data_1, data_2], labels,
+                              validation_data=([val_data_1, val_data_2], val_labels),
+                              epochs=10, batch_size=10, verbose=1)
+
+
+
   # Compile and train the model
-  model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit([data_1, data_2], labels, epochs=10, batch_size=10, validation_data=([val_data_1, val_data_2], val_labels))
+  # model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+  # model.fit([data_1, data_2], labels, epochs=10, batch_size=10, validation_data=([val_data_1, val_data_2], val_labels))
 
   #save model
   model.save('Siamese.keras')
