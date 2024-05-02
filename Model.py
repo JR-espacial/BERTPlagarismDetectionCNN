@@ -1,4 +1,10 @@
 import tensorflow as tf
+from tensorflow.keras.layers import (
+  Embedding, 
+  GRU, 
+  Dense, 
+  Bidirectional
+)
 from preprocessData import getNumTokens
 import numpy as np
 import seaborn as sns
@@ -7,10 +13,11 @@ from sklearn.metrics import confusion_matrix
 
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
-        tf.keras.layers.GRU(units =100),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(1, activation='sigmoid')
+        Embedding(VOCAB_SIZE,70,mask_zero=True),
+        Bidirectional(GRU(units=64, return_sequences=True)),
+        Bidirectional(GRU(units=64)),
+        Dense(64, activation='relu'),
+        Dense(1, activation='sigmoid')
     ])
     return model
 
@@ -41,19 +48,21 @@ def plotModel(model):
     import matplotlib.pyplot as plt
 
     # Plot model accuracy
-    plt.plot(model.history.history['accuracy'])
+    plt.plot(model.history.history['accuracy'], label='Train')
+    plt.plot(model.history.history['val_accuracy'], label='Validation')
     plt.title('Model accuracy')
     plt.ylabel('Accuracy')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend(loc='upper left')
     plt.show()
 
     # Plot model loss
-    plt.plot(model.history.history['loss'])
+    plt.plot(model.history.history['loss'], label='Train')
+    plt.plot(model.history.history['val_loss'], label='Validation')
     plt.title('Model loss')
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
-    plt.legend(['Train'], loc='upper left')
+    plt.legend(loc='upper left')
     plt.show()
 
 
