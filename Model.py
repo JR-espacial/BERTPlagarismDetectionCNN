@@ -9,6 +9,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Input, LSTM, Embedding, Bidirectional, Dense, Lambda
 from tensorflow.keras.models import Model
 import numpy as np
+from tensorflow.keras.utils import to_categorical
 
 # Define the Siamese recurrent network architecture
 def siamese_rnn(input_shape, lstm_units=64, embedding_dim=128):
@@ -75,10 +76,16 @@ def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
 
 def trainModel(data, labels, val_data, val_labels):
   VOCAB_SIZE = 42
-  MAX_SEQUENCE_LENGTH = 2381
 
   data_1, data_2 = data
   val_data_1, val_data_2 = val_data
+
+  MAX_SEQUENCE_LENGTH = data_1.shape[1]
+
+  pair1_one_hot = to_categorical(data_1, num_classes=VOCAB_SIZE)
+  pair2_one_hot = to_categorical(data_2, num_classes=VOCAB_SIZE)
+  pair1_one_hot_val = to_categorical(val_data_1, num_classes=VOCAB_SIZE)
+  pair2_one_hot_val = to_categorical(val_data_2, num_classes=VOCAB_SIZE)
 
   print("Shape:", data_1.shape)
   # Define input shape (sequence length, vocabulary size)
@@ -92,15 +99,8 @@ def trainModel(data, labels, val_data, val_labels):
   siamese_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
   # Train the model
-  history = siamese_model.fit([data_1, data_2], labels,
-                              validation_data=([val_data_1, val_data_2], val_labels),
-                              epochs=10, batch_size=10, verbose=1)
+  history = siamese_model.fit([pair1_one_hot, pair2_one_hot], labels,epochs=10, batch_size=10, verbose=1)
 
-
-
-  # Compile and train the model
-  # model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  # model.fit([data_1, data_2], labels, epochs=10, batch_size=10, validation_data=([val_data_1, val_data_2], val_labels))
 
   #save model
   model.save('Siamese.keras')
