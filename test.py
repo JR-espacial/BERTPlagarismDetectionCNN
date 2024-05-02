@@ -1,4 +1,4 @@
-from model import plot_confusion_matrix
+from Model import plot_confusion_matrix
 from tensorflow.keras import models
 import tensorflow as tf
 import numpy as np
