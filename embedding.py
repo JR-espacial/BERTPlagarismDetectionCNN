@@ -193,6 +193,4 @@ def getSimilarities(data_pairs):
 
     allSimilarities.append(similarities)
 
-  print("Similitudes del primero: ", allSimilarities[0])
-  print("Similitudes del segundo: ", allSimilarities[1])
   return allSimilarities

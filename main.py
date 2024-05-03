@@ -45,4 +45,7 @@ def main():
     similarities = getSimilarities(data_pairs[div_train+div_val:])
     complete_evaluation(model, X_test, y_test, similarities)
 
+    similarities = getSimilarities(data_pairs)
+    complete_evaluation(model, data, labels, similarities)
+
 main()
