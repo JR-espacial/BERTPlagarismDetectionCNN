@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(VOCAB_SIZE,70,mask_zero=True),
-        tf.keras.layers.GRU(units=150),
+        tf.keras.layers.GRU(units=512),
         tf.keras.layers.Dense(64, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
