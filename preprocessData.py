@@ -1,4 +1,10 @@
 import re
+from gensim.models import Word2Vec
+from nltk.tokenize import word_tokenize
+from keras.preprocessing.text import Tokenizer
+import os
+
+
 
 # Dictionary mapping token names to token values
 token_type_dict = {
@@ -120,6 +126,25 @@ def getNumTokens():
     return len(token_type_dict)
 
 
+def fitTokenizer():
+    texts =[]
+    for file in os.listdir('./fire14-source-code-training-dataset/java/'):
+        code = open('./fire14-source-code-training-dataset/java/' + file).read()
+
+        texts.append(code)
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(texts)
+    return len(tokenizer.index_word)+1, tokenizer
+
+
+def preprocessData(java_code, tokenizer):
+
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts([java_code])
+    
+    tokenized_code = tokenizer.texts_to_sequences([java_code])
+    # print(tokenized_code)
+    return tokenized_code
 
 # # Example usage: load file
 # java_code = open('./fire14-source-code-training-dataset/java/043.java').read()

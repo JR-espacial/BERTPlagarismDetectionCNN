@@ -16,7 +16,7 @@ def execute(function_name, function, *args):
 
 
 def main():
-    data, labels= create_dataset()
+    data, labels,vocab= create_dataset()
     # data_reshaped = np.squeeze(data, axis=1)
 
     div_train = int(len(data) * 0.8)
@@ -32,7 +32,7 @@ def main():
     # validation_data = create_batches(X_val, y_val)
 
 
-    execute("train the model",trainModel, X_train, y_train, X_val, y_val)
+    execute("train the model",trainModel, X_train, y_train, X_val, y_val,vocab)
 
     model = load_model('RNN.keras')
 

@@ -6,6 +6,8 @@ from relationsMatrix import get_relations_matrix
 import tensorflow as tf
 import numpy as np
 from embedding import create_embedding
+from preprocessData import fitTokenizer
+from preprocessData import preprocessData
 
 
 def get_plag_samples(dataset,labels):
@@ -18,7 +20,7 @@ def get_plag_samples(dataset,labels):
 
 
 # read files with plagarism
-def getPlagPairs():
+def getPlagPairs(tokenizer):
     plag = open("fire14-source-code-training-dataset/SOCO14-java.qrel").readlines()
 
     plagpairs = [] # list of plagarised pairs
@@ -38,20 +40,20 @@ def getPlagPairs():
     for pair in plagpairs:
         file1 = open('./fire14-source-code-training-dataset/java/' + str(pair[0])).read()
         file2 = open('./fire14-source-code-training-dataset/java/' + str(pair[1])).read()
-        fileContent1 = lexer(file1)
-        fileContent2 = lexer(file2)
+        fileContent1 = preprocessData(file1, tokenizer)
+        fileContent2 = preprocessData(file2, tokenizer)
         tokenizedPlagPairs.append([[pair[0], fileContent1], [pair[1], fileContent2], 1])
 
     return tokenizedPlagPairs
 
 #generate random pairs
-def getRandomPairs(matrix):
+def getRandomPairs(matrix,tokenizer):
     tokenizedFiles=[]
     #tokenize all the files
     for file in os.listdir('./fire14-source-code-training-dataset/java/'):
         java_code = open('./fire14-source-code-training-dataset/java/' + file).read()
 
-        fileContent = lexer(java_code)
+        fileContent = preprocessData(java_code, tokenizer)
         filenum = int(file.split('.')[0])
 
 
@@ -108,16 +110,21 @@ def create_batches(X, y, batch_size=32):
 
 def create_dataset():
     #create matrix with plagarised pairs
+    vocab,tokenizer = fitTokenizer()
+
+    print("Vocab:", vocab)
+    print("Tokenizer:", tokenizer)
     filename = "fire14-source-code-training-dataset/SOCO14-java.qrel"
     file_directory = "fire14-source-code-training-dataset/java"
     matrix = get_relations_matrix(filename, file_directory)
 
     # Get plagarised pairs
-    plagPairs = getPlagPairs()
+    plagPairs = getPlagPairs(tokenizer)
     # Get random pairs
-    randomPairs = getRandomPairs(matrix)
+    randomPairs = getRandomPairs(matrix,tokenizer)
     # Get dataset
     dataset = getDataSet(plagPairs, randomPairs, randPercentage=.5, totalPairs=129)
+
 
 
 
@@ -128,6 +135,8 @@ def create_dataset():
 
 
     #divide the dataset into data and labels
+
+    print("Dataset:", dataset[0])
     data = []
     labels = []
     for pair in dataset:
@@ -152,4 +161,4 @@ def create_dataset():
     print("Tensor:", tensor_tf.shape)
     print(tensor_tf[1])
 
-    return tensor_tf, labels
+    return tensor_tf, labels,vocab

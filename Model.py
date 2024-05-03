@@ -14,8 +14,7 @@ def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     ])
     return model
 
-def trainModel(data, labels, val_data, val_labels):
-  vocab_size = getNumTokens()
+def trainModel(data, labels, val_data, val_labels,vocab_size):
 
   # Reshape the data remove the second dimension
   data_reshaped = np.squeeze(data, axis=1)
@@ -28,7 +27,7 @@ def trainModel(data, labels, val_data, val_labels):
   history = model.fit(
       data_reshaped,
       labels,
-      epochs=30,
+      epochs=10,
       batch_size=10,
       validation_data=(val_reshaped, val_labels)
   )
