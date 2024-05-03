@@ -5,7 +5,6 @@ from tensorflow.keras.layers import (
   GRU, 
   Dense, 
   Bidirectional,
-  Dropout
 )
 from tensorflow.keras.callbacks import EarlyStopping
 from preprocessData import getNumTokens
@@ -22,9 +21,9 @@ early_stopping = EarlyStopping(
 
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     model = tf.keras.Sequential([
-        Embedding(VOCAB_SIZE, 32, mask_zero=True),
-        Bidirectional(GRU(units=32)),
-        Dense(32, activation='relu'),
+        Embedding(VOCAB_SIZE, 70, mask_zero=True),
+        Bidirectional(GRU(units=150)),
+        Dense(64, activation='relu'),
         Dense(1, activation='sigmoid')
     ])
     return model
@@ -44,7 +43,7 @@ def trainModel(data, labels, val_data, val_labels):
       data_reshaped,
       labels,
       epochs=30,
-      batch_size=10,
+      batch_size=24,
       validation_data=(val_reshaped, val_labels)
   )
 
