@@ -176,6 +176,19 @@ def create_embedding(text1, text2, option = "2"):
   return (vec1, vec2)
 
 
+def getSimilarities(train_data, validation_data, test_data):
+  print("Obteniendo similitudes...")
+  
+  # Se obtienen las palabras de los textos
+  text1_words, text2_words = text_words(train_data, validation_data)
+
+  # Se crea el diccionario de palabras con sus frecuencias
+  unique = word_dictionary(text1_words, text2_words)
+
+  # Se obtienen las similitudes entre los textos
+  similitud = create_embedding(text1_words, text2_words)
+
+  return similitud
 
 # Lectura de archivos
 # text_file = open("003.java", "r", encoding='utf-8', errors='ignore')

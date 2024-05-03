@@ -9,14 +9,13 @@ def execute(function_name, function, *args):
     opt = input("Do you want to " + function_name + " ? (y/n)")
     if opt == "y":
         output = function(*args)
-        if output != None:
-            return output
+        return output
     else:
         print("Function " + function_name + " was not executed")
 
 
 def main():
-    data, labels= create_dataset()
+    data, labels, pair_data = create_dataset()
     # data_reshaped = np.squeeze(data, axis=1)
 
     div_train = int(len(data) * 0.7)
@@ -34,11 +33,12 @@ def main():
     # train_data = create_batches(X_train, y_train)
     # validation_data = create_batches(X_val, y_val)
 
-
-    execute("train the model", trainModel, X_train, y_train, X_val, y_val)
+    trainConfidence = execute("train the model",trainModel, X_train, y_train, X_val, y_val)
+    print("trainConfidence", trainConfidence)
 
     model = load_model('RNN.keras')
 
-    execute("test the model",test_model, model, X_test, y_test)
+    testConfidence = execute("test the model",test_model, model, X_test, y_test)
+    print("testConfidence", testConfidence)
 
 main()

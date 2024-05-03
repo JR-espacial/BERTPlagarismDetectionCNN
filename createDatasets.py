@@ -13,7 +13,7 @@ def get_plag_samples(dataset,labels):
     for i in range(len(labels)):
         if labels[i] == 1:
             plag_samples.append(dataset[i])
-    
+
     return plag_samples
 
 
@@ -130,10 +130,12 @@ def create_dataset():
     #divide the dataset into data and labels
     data = []
     labels = []
+    pair_data = []
     for pair in dataset:
         # vector1, vector2 = create_embedding(pair[0][1], pair[1][1])
         # data.append([vector1 + vector2])
         data.append([pair[0][1] + pair[1][1]])
+        pair_data.append([pair[0][1], pair[1][1]])
         labels.append(pair[2])
 
     # Convert data to ragged tensor
@@ -152,4 +154,4 @@ def create_dataset():
     print("Tensor:", tensor_tf.shape)
     print(tensor_tf[1])
 
-    return tensor_tf, labels
+    return tensor_tf, labels, pair_data

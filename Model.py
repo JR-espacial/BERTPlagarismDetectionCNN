@@ -38,8 +38,11 @@ def trainModel(data, labels, val_data, val_labels):
 
   plotModel(history)
 
-  train_predictions = (model.predict(data_reshaped) > 0.5).astype("int32")
+  confidence = model.predict(data_reshaped)
+  train_predictions = (confidence > 0.5).astype("int32")
   plot_confusion_matrix(labels, train_predictions, title='Training Confusion matrix')
+
+  return confidence
 
 
 
