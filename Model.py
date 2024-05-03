@@ -1,22 +1,30 @@
 import tensorflow as tf
+from tensorflow.keras.regularizers import l2
 from tensorflow.keras.layers import (
   Embedding, 
   GRU, 
   Dense, 
-  Bidirectional
+  Bidirectional,
+  Dropout
 )
+from tensorflow.keras.callbacks import EarlyStopping
 from preprocessData import getNumTokens
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
+early_stopping = EarlyStopping(
+    monitor='accuracy',
+    patience=10,
+    restore_best_weights=True
+)
+
 def createModel(VOCAB_SIZE, EMBEDDING_DIM=70, MAX_SEQUENCE_LENGTH=27):
     model = tf.keras.Sequential([
-        Embedding(VOCAB_SIZE,70,mask_zero=True),
-        Bidirectional(GRU(units=64, return_sequences=True)),
-        Bidirectional(GRU(units=64)),
-        Dense(64, activation='relu'),
+        Embedding(VOCAB_SIZE, 32, mask_zero=True),
+        Bidirectional(GRU(units=32)),
+        Dense(32, activation='relu'),
         Dense(1, activation='sigmoid')
     ])
     return model
@@ -33,7 +41,12 @@ def trainModel(data,labels,val_data, val_labels):
   model = createModel( VOCAB_SIZE = vocab_size)
   # Compile and train the model
   model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-  model.fit(data_reshaped, labels, epochs=10, batch_size=10, validation_data=(val_reshaped, val_labels))
+  model.fit(data_reshaped, 
+            labels, 
+            epochs=10, 
+            batch_size=10, 
+            validation_data=(val_reshaped, val_labels),
+            callbacks=[early_stopping])
 
   #save model
   model.save('RNN.keras')
