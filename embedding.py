@@ -14,21 +14,20 @@ def text_words(texto1, texto2):
 
 # Genera la matriz de transición de un texto dado
 def generate_transition_matrix(text, unique, label):
-  words = text.split()
   words_set = list(unique.keys())
   N = len(unique)
 
   # Se reduce en 1 la cantidad de la ultima palabra del texto porque el último elemento no tiene transición
-  unique[words[-1]][label] -= 1
+  unique[text[-1]][label] -= 1
 
 
   # Creación de la matriz en 0
   transition_matrix = np.zeros((N, N))
 
-  for i in range(len(words)-1):
-    current_word = words[i]
+  for i in range(len(text)-1):
+    current_word = text[i]
     current_word_index = words_set.index(current_word)
-    next_word = words[i + 1]
+    next_word = text[i + 1]
     next_word_index = words_set.index(next_word)
 
     # Incrementa la transición en las celdas que corresponden
@@ -83,12 +82,13 @@ def frequency_similarity(unique):
     vector_sintetico.append(unique[key][1])
 
   # Calcular la similitud con el coseno entre los dos vectores
-  # vector1 = np.array(vector_original).reshape(1, -1)
-  # vector2 = np.array(vector_sintetico).reshape(1, -1)
+  vector1 = np.array(vector_original).reshape(1, -1)
+  vector2 = np.array(vector_sintetico).reshape(1, -1)
 
-  # similitudFrecuencias = cosine_similarity(vector1, vector2)
+  similitudFrecuencias = cosine_similarity(vector1, vector2)
 
-  return (vector_original, vector_sintetico)
+  return similitudFrecuencias[0][0]
+  # return (vector_original, vector_sintetico)
 
 
 # -------- Representación vectorial con TF-IDF --------
@@ -126,10 +126,13 @@ def tfidf_similarity(unique, text1_words, text2_words):
     tfidf2.append(tf2[i] * idf[i])
 
   # Convertir los vectores en matrices de una fila
-  # tfidf1 = np.array(tfidf1).reshape(1, -1)
-  # tfidf2 = np.array(tfidf2).reshape(1, -1)
+  tfidf1 = np.array(tfidf1).reshape(1, -1)
+  tfidf2 = np.array(tfidf2).reshape(1, -1)
 
-  return (tfidf1, tfidf2)
+  # Calcular el coseno entre los dos vectores
+  similitud = cosine_similarity(tfidf1, tfidf2)
+  return similitud[0][0]
+  # return (tfidf1, tfidf2)
 
 # -------- Coseno entre 2 matrices --------
 def cosine_angle_between_matrixes(A, B):
@@ -176,27 +179,20 @@ def create_embedding(text1, text2, option = "2"):
   return (vec1, vec2)
 
 
-def getSimilarities(train_data, validation_data, test_data):
+def getSimilarities(data_pairs):
   print("Obteniendo similitudes...")
-  
-  # Se obtienen las palabras de los textos
-  text1_words, text2_words = text_words(train_data, validation_data)
+  allSimilarities = []
+  for pair in data_pairs:
+    similarities = []
+    text1, text2 = pair[0], pair[1]
+    unique = word_dictionary(text1, text2)
 
-  # Se crea el diccionario de palabras con sus frecuencias
-  unique = word_dictionary(text1_words, text2_words)
+    transition_matrix_1 = generate_transition_matrix(text1, unique, 0)
+    transition_matrix_2 = generate_transition_matrix(text2, unique, 1)
+    similarities.append(cosine_angle_between_matrixes(transition_matrix_1, transition_matrix_2))
 
-  # Se obtienen las similitudes entre los textos
-  similitud = create_embedding(text1_words, text2_words)
+    allSimilarities.append(similarities)
 
-  return similitud
-
-# Lectura de archivos
-# text_file = open("003.java", "r", encoding='utf-8', errors='ignore')
-# texto_original = text_file.read()
-# text_file2 = open("004.java", "r", encoding='utf-8', errors='ignore')
-# texto_sintetico = text_file2.read()
-
-# create_embedding(texto_original, texto_sintetico)
-
-# print("Seleccione una opción: \n1. Embedding por frecuencia \n2. Embedding de TFIDF, \n3. Embedding por tansiscion")
-# option = input("¿Qué embedding quieres: 1, 2 o 3? ")
+  print("Similitudes del primero: ", allSimilarities[0])
+  print("Similitudes del segundo: ", allSimilarities[1])
+  return allSimilarities

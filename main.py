@@ -3,19 +3,22 @@ from Model import trainModel
 import numpy as np
 from test import test_model
 from keras.models import load_model
+from embedding import getSimilarities
+from evaluation import complete_evaluation
 
 def execute(function_name, function, *args):
     #prompt the use if he wants to ecexute the function name
     opt = input("Do you want to " + function_name + " ? (y/n)")
     if opt == "y":
         output = function(*args)
-        return output
+        if output != None:
+            return output
     else:
         print("Function " + function_name + " was not executed")
 
 
 def main():
-    data, labels, pair_data = create_dataset()
+    data, labels, data_pairs = create_dataset()
     # data_reshaped = np.squeeze(data, axis=1)
 
     div_train = int(len(data) * 0.7)
@@ -33,12 +36,13 @@ def main():
     # train_data = create_batches(X_train, y_train)
     # validation_data = create_batches(X_val, y_val)
 
-    trainConfidence = execute("train the model",trainModel, X_train, y_train, X_val, y_val)
-    print("trainConfidence", trainConfidence)
+    execute("train the model",trainModel, X_train, y_train, X_val, y_val)
 
     model = load_model('RNN.keras')
 
-    testConfidence = execute("test the model",test_model, model, X_test, y_test)
-    print("testConfidence", testConfidence)
+    execute("test the model",test_model, model, X_test, y_test)
+
+    similarities = getSimilarities(data_pairs[div_train+div_val:])
+    complete_evaluation(model, X_test, y_test, similarities)
 
 main()
