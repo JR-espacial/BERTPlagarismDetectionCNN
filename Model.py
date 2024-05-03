@@ -71,7 +71,7 @@ def plot_confusion_matrix(labels, predictions, title='Confusion matrix'):
     # Calculo de metricas
     true_positive_rate = TP / (TP + FN)
     false_positive_rate = FP / (FP + TN)
-    accuracy = TP+TN / (TP + TN + FP + FN)
+    accuracy = (TP + TN) / (TP + TN + FP + FN)
     precision = TP / (TP + FP)
     recall = TP / (TP + FN)
     f1_score = 2 * ((precision * recall) / (precision + recall))
